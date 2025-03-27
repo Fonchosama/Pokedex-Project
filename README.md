@@ -45,7 +45,7 @@ After opening the application in a web browser, you will see a list of Pokémon.
 
 -promise-fetch
 -promise-polyfill
--scripts (archivo local, no una librería)
+-scripts (local files, not library)
 -jQuery (versión 3.3.1 slim)
 -Popper.js (versión 1.14.7)
 -Bootstrap (versión 4.3.1)
