@@ -1,5 +1,9 @@
+const APIURL = "https://pokeapi.co/api/v2/pokemon/?limit=30";
+
 let pokemonRepository = (function () {
   let pokemonList = [];
+  let prevURL = null;
+  let nextURL = null;
 
   function getAll() {
     return pokemonList;
@@ -18,6 +22,7 @@ let pokemonRepository = (function () {
     button.classList = "pokemon-button btn btn-dark";
     button.setAttribute("data-toggle", "modal");
     button.setAttribute("data-target", "#pokemon-modal");
+   
     listItem.appendChild(button);
     nuevoElemento.appendChild(listItem);
     listItem.classList.add("lista");
@@ -26,12 +31,14 @@ let pokemonRepository = (function () {
     });
     }
 
-  function loadList() {
-    return fetch('https://pokeapi.co/api/v2/pokemon/?limit=151')
+  function loadList(apiurl) {
+    return fetch(apiurl)
       .then(function (response) {
         return response.json();
       })
       .then(function (json) {
+        prevURL = json.previous;
+        nextURL = json.next;
         json.results.forEach(function (item) {
           let pokemon = {
             name: item.name,
@@ -43,6 +50,15 @@ let pokemonRepository = (function () {
       .catch(function (error) {
         console.error(error);
       });
+  }
+
+  function getPrevUrl() {
+    return prevURL;
+  }
+
+  function getNextUrl() {
+    button.setAttribute("data-target", ".nxt");
+    return nextURL;
   }
 
   function loadDetails(pokemon) {
@@ -87,19 +103,60 @@ let pokemonRepository = (function () {
     modal.style.display = 'none';
   }
 
+  function cleanAll() {
+    pokemonList.length = 0;
+    // cleanup ui
+    let nuevoElemento = document.querySelector(".lista-pokemon");
+    nuevoElemento.innerHTML = "";
+  }
+
   return {
     getAll,
     add,
     addListItem,
     loadList,
     loadDetails,
+    getPrevUrl,
+    getNextUrl,
+    cleanAll
   };
 })();
 
-pokemonRepository.loadList().then(function () {
+pokemonRepository.loadList(APIURL).then(function () {
   let pokemonList = pokemonRepository.getAll();
 
   pokemonList.forEach(function (pokemon) {
     pokemonRepository.addListItem(pokemon);
+  });
+});
+
+
+// temp1.addEventListener("click", () => {
+//   // clean ui and gloabl array
+//   pokemonRepository.cleanAll();
+//       pokemonRepository.loadList(pokemonRepository.getNextUrl()).then(function () {
+// let pokemonList = pokemonRepository.getAll();
+
+// pokemonList.forEach(function (pokemon) {
+//   pokemonRepository.addListItem(pokemon);
+// });
+// });
+// });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const nextButton = document.getElementById("nxt");
+
+  nextButton.addEventListener("click", () => {
+    // Limpiar UI y array global
+    pokemonRepository.cleanAll();
+
+    // Cargar más Pokémon desde la siguiente URL
+    pokemonRepository.loadList(pokemonRepository.getNextUrl()).then(function () {
+      let pokemonList = pokemonRepository.getAll();
+
+      pokemonList.forEach(function (pokemon) {
+        pokemonRepository.addListItem(pokemon);
+      });
+    });
   });
 });
