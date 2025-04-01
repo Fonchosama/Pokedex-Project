@@ -24,7 +24,7 @@ html {
   padding: 20px;
   max-width: 100%; 
   margin: auto;
-  width: 500px;
+  width: 900px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);   /* hacer que se vean 4 filas de pokemons y que el pokemón aparezca al aldo
   del  nombre  arriba  */
 }
@@ -45,6 +45,14 @@ html {
   border-radius: 10px;
   font-family: 'pokemon GB';
   cursor: pointer;
+}
+
+.lista-pokemon {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  list-style: none;
+  padding: 0;
 }
 
 .lista {
